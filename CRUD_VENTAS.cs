@@ -18,7 +18,7 @@ namespace SistemaVentas
     {
         private Conexion conexion = new Conexion();
 
-        // Crear una nueva venta
+      
         public bool CrearVenta(Venta venta)
         {
             try
@@ -27,7 +27,7 @@ namespace SistemaVentas
                 {
                     using (var transaction = conn.BeginTransaction())
                     {
-                        // Insertar la venta en la tabla de ventas
+                      
                         string queryVenta = "INSERT INTO ventas (FechaVenta, TotalVenta) VALUES (@FechaVenta, @TotalVenta)";
                         using (var cmdVenta = new MySqlCommand(queryVenta, conn, transaction))
                         {
@@ -35,11 +35,11 @@ namespace SistemaVentas
                             cmdVenta.Parameters.AddWithValue("@TotalVenta", venta.TotalVenta);
                             cmdVenta.ExecuteNonQuery();
 
-                            // Obtener el ID generado para la venta
+                           
                             venta.IdVenta = (int)cmdVenta.LastInsertedId;
                         }
 
-                        // Insertar cada detalle de la venta
+                  
                         foreach (var item in venta.DetallesVenta)
                         {
                             string queryDetalle = "INSERT INTO detalles_venta (IdVenta, IdProducto, Cantidad, PrecioUnitario) VALUES (@IdVenta, @IdProducto, @Cantidad, @PrecioUnitario)";
@@ -52,7 +52,7 @@ namespace SistemaVentas
                                 cmdDetalle.ExecuteNonQuery();
                             }
 
-                            // Actualizar el stock del producto
+                        
                             string queryStock = "UPDATE productos SET Stock = Stock - @Cantidad WHERE IdProducto = @IdProducto";
                             using (var cmdStock = new MySqlCommand(queryStock, conn, transaction))
                             {
@@ -75,7 +75,7 @@ namespace SistemaVentas
             }
         }
 
-        // Leer ventas
+        
         public List<Venta> ObtenerVentas()
         {
             var ventas = new List<Venta>();
@@ -109,7 +109,7 @@ namespace SistemaVentas
             return ventas;
         }
 
-        // Actualizar una venta
+   
         public bool ActualizarVenta(Venta venta)
         {
             try
@@ -136,7 +136,7 @@ namespace SistemaVentas
             }
         }
 
-        // Eliminar una venta
+    
         public bool EliminarVenta(int idVenta)
         {
             try
