@@ -2,87 +2,67 @@ using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
 
-public class ClienteCRUD
+namespace SistemaFacturacion.Models
 {
-    private string connectionString = "Data Source=DB.db";
-
-    // Crear nuevo cliente
-    public void CrearCliente(Cliente cliente)
+    public class Cliente
     {
-        using (var connection = new SQLiteConnection(connectionString))
+        public string Nit { get; private set; }
+        public string Nombre { get; private set; }
+        public string Celular { get; private set; }
+
+        // Constructor para inicializar un cliente
+        public Cliente(string nombre, string nit, string celular)
         {
-            connection.Open();
-            var query = "INSERT INTO Cliente (nombreCompleto, carnet, celular) VALUES (@nombreCompleto, @carnet, @celular)";
-            using (var command = new SQLiteCommand(query, connection))
+            Create(nombre, nit, celular);
+        }
+
+        // Método para crear un nuevo cliente
+        public void Create(string nombre, string nit, string celular)
+        {
+            if (string.IsNullOrWhiteSpace(nombre) || string.IsNullOrWhiteSpace(nit) || string.IsNullOrWhiteSpace(celular))
+                throw new ArgumentException("Los campos no pueden estar vacíos.");
+
+            Nombre = nombre;
+            Nit = nit;
+            Celular = celular;
+
+            Console.WriteLine("Cliente creado con éxito.");
+        }
+
+        // Método para actualizar los datos de un cliente
+        public void Update(string nombre, string celular)
+        {
+            if (string.IsNullOrWhiteSpace(nombre) || string.IsNullOrWhiteSpace(celular))
+                throw new ArgumentException("Los campos no pueden estar vacíos.");
+
+            Nombre = nombre;
+            Celular = celular;
+
+            Console.WriteLine("Cliente actualizado con éxito.");
+        }
+
+        // Método para eliminar un cliente por NIT
+        public void Delete(string nit)
+        {
+            if (Nit == nit)
             {
-                command.Parameters.AddWithValue("@nombreCompleto", cliente.NombreCompleto);
-                command.Parameters.AddWithValue("@carnet", cliente.Carnet);
-                command.Parameters.AddWithValue("@celular", cliente.Celular);
-                command.ExecuteNonQuery();
+                Nit = string.Empty;
+                Nombre = string.Empty;
+                Celular = string.Empty;
+
+                Console.WriteLine("Cliente eliminado con éxito.");
+            }
+            else
+            {
+                Console.WriteLine("Cliente no encontrado.");
             }
         }
-    }
 
-    // Leer todos los clientes
-    public List<Cliente> ObtenerClientes()
-    {
-        var clientes = new List<Cliente>();
-
-        using (var connection = new SQLiteConnection(connectionString))
+        // Método para buscar un cliente por NIT
+        public static Cliente Search(string nit, List<Cliente> clientes)
         {
-            connection.Open();
-            var query = "SELECT * FROM Cliente";
-            using (var command = new SQLiteCommand(query, connection))
-            {
-                using (var reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        var cliente = new Cliente
-                        {
-                            Id = reader.GetInt32(0),
-                            NombreCompleto = reader.GetString(1),
-                            Carnet = reader.GetString(2),
-                            Celular = reader.GetString(3)
-                        };
-                        clientes.Add(cliente);
-                    }
-                }
-            }
-        }
-        return clientes;
-    }
-
-    // Actualizar cliente
-    public void ActualizarCliente(Cliente cliente)
-    {
-        using (var connection = new SQLiteConnection(connectionString))
-        {
-            connection.Open();
-            var query = "UPDATE Cliente SET nombreCompleto = @nombreCompleto, carnet = @carnet, celular = @celular WHERE id = @id";
-            using (var command = new SQLiteCommand(query, connection))
-            {
-                command.Parameters.AddWithValue("@nombreCompleto", cliente.NombreCompleto);
-                command.Parameters.AddWithValue("@carnet", cliente.Carnet);
-                command.Parameters.AddWithValue("@celular", cliente.Celular);
-                command.Parameters.AddWithValue("@id", cliente.Id);
-                command.ExecuteNonQuery();
-            }
-        }
-    }
-
-    // Eliminar cliente
-    public void EliminarCliente(int id)
-    {
-        using (var connection = new SQLiteConnection(connectionString))
-        {
-            connection.Open();
-            var query = "DELETE FROM Cliente WHERE id = @id";
-            using (var command = new SQLiteCommand(query, connection))
-            {
-                command.Parameters.AddWithValue("@id", id);
-                command.ExecuteNonQuery();
-            }
+            return clientes.FirstOrDefault(c => c.Nit == nit);
         }
     }
 }
+
