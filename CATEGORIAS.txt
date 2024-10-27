@@ -1,0 +1,41 @@
+INSERT INTO Categoria (nombre, descripcion, descuento)
+        VALUES
+        ('Limpieza', 'Artículos de limpieza', 0.0),
+        ('Alimentos', 'Comida y alimentos que quitan el hambre', 0.0),
+        ('Bebidas', 'Refrescos que quitan la sed', 0.0),
+        ('Juguetes', 'Entretenerse y diversión', 0.0)
+
+DROP TABLE IF EXISTS Categoria
+
+CREATE TABLE Categoria (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nombre TEXT NOT NULL UNIQUE,
+            descripcion TEXT NOT NULL,
+            descuento DOUBLE NOT NULL
+        )
+-- Obtener todas las categorías
+SELECT * FROM Categoria;
+
+-- Obtener una categoría específica por nombre
+SELECT * FROM Categoria WHERE nombre = 'Alimentos';
+
+-- Cambiar el descuento de la categoría 'Alimentos' a 10%
+UPDATE Categoria
+SET descuento = 10.0
+WHERE nombre = 'Alimentos';
+
+-- Modificar la descripción de 'Juguetes'
+UPDATE Categoria
+SET descripcion = 'Juguetes para todas las edades'
+WHERE nombre = 'Juguetes';
+
+DELETE FROM Categoria WHERE nombre = 'Bebidas';
+
+
+RESUMEN: 
+
+Create	INSERT INTO Categoria (nombre, descripcion, descuento) VALUES (...);
+Read	SELECT * FROM Categoria;
+Update	UPDATE Categoria SET campo = valor WHERE condición;
+Delete	DELETE FROM Categoria WHERE condición;
+
